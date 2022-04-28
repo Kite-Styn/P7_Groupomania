@@ -51,52 +51,13 @@ export default {
     LogoutHeader,
     FooterTemp
   },
+  data() {
+    return {
+      regexName: /^[^±!@£$%^&*_+¡€#¢§¶•ªº()"«\\/{}[\]~<>?:;|=.,\d\s]+$/,
+    }
+  },
   methods: {
-    filterFirstName() {
-      document.getElementById("first_name").addEventListener("input", function(e) {
-        if (Store.state.regexName.test(e.target.value) && e.target.value !== "") {
-          document.getElementsByClassName("first-name-invalid")[0].style.display = "none";
-          invalidFirstName = false
-        } else {
-          document.getElementsByClassName("first-name-invalid")[0].style.display = "initial";
-          invalidFirstName = true
-        }
-      })
-    },
-    filterLastName() {
-      document.getElementById("last_name").addEventListener("input", function(e) {
-        if (Store.state.regexName.test(e.target.value) && e.target.value !== "") {
-          document.getElementsByClassName("last-name-invalid")[0].style.display = "none";
-          invalidLastName = false
-        } else {
-          document.getElementsByClassName("last-name-invalid")[0].style.display = "initial";
-          invalidLastName = true
-        }
-      })
-    },
-    filterEmail() {
-      document.getElementById("email").addEventListener("input", function(e) {
-        if (Store.state.regexEmail.test(e.target.value) && e.target.value !== "") {
-          document.getElementsByClassName("email-invalid")[0].style.display = "none";
-          invalidEmail = false
-        } else {
-          document.getElementsByClassName("email-invalid")[0].style.display = "initial";
-          invalidEmail = true
-        }
-      })
-    },
-    filterPassword() {
-      document.getElementById("password").addEventListener("input", function(e) {
-        if (e.target.value !== "") {
-          document.getElementsByClassName("password-invalid")[0].style.display = "none";
-          invalidPassword = false
-        } else {
-          document.getElementsByClassName("password-invalid")[0].style.display = "initial";
-          invalidPassword = true
-        }
-      })
-    },
-    signup() {
+    async signup() {
       let user = {
         first_name: document.getElementById("first_name").value,
         last_name: document.getElementById("last_name").value,
@@ -104,48 +65,74 @@ export default {
         password: document.getElementById("password").value
       };
       if (invalidFirstName === false && user.first_name !== "" && invalidLastName === false && user.last_name !== "" && invalidEmail === false && user.email !== "" && invalidPassword === false && user.password !== "") {
-        fetch("http://localhost:3000/api/auth/signup", {
+        let res = await fetch("http://localhost:3000/api/auth/signup", {
           method: "POST",
           headers : {
             "Accept" : "application/json",
             "Content-Type" : "application/json"
           },
           body: JSON.stringify(user)
-        })
-        .then(function(res) {
-          if (res.ok) {
-            return res.json();
-          }
-        })
-        .catch(function(err) {
-          console.log(err)
         });
-        //window.location.href="http://localhost:8080/login"
+        if (!res.ok) {
+          throw new Error()
+        }
+        let data = await res.json();
+        console.log(data);
+        let resLog = await fetch("http://localhost:3000/api/auth/login", {
+          method: "POST",
+          headers : {
+            "Accept" : "application/json",
+            "Content-Type" : "application/json"
+          },
+          body: JSON.stringify(user)
+        });
+        if (!resLog.ok) {
+          throw new Error()
+        }
+        let dataLog = await resLog.json();
+        console.log(dataLog);
+        sessionStorage.setItem("user", `userId: ${dataLog.userId}, token: ${dataLog.token}`);
+        window.location.href="http://localhost:8080/posts"
       }
     },
-    login() {
-      let user = {
-        email: document.getElementById("email").value,
-        password: document.getElementById("password").value
-      };
-      fetch("http://localhost:3000/api/auth/login", {
-        method: "POST",
-        headers : {
-          "Accept" : "application/json",
-          "Content-Type" : "application/json"
-        },
-        body: JSON.stringify(user)
-      })
-      .then(function(res) {
-        if (res.ok) {
-          console.log(res.json());
-          return res.json();
-        }
-      })
-      .catch(function(err) {
-        console.log(err)
-      });
-    }
+  },
+  mounted() {
+    document.getElementById("first_name").addEventListener("input", function(e) {
+      if (Store.state.regexName.test(e.target.value) && e.target.value !== "") {
+        document.getElementsByClassName("first-name-invalid")[0].style.display = "none";
+        invalidFirstName = false
+      } else {
+        document.getElementsByClassName("first-name-invalid")[0].style.display = "initial";
+        invalidFirstName = true
+      }
+    }),
+    document.getElementById("last_name").addEventListener("input", function(e) {
+      if (Store.state.regexName.test(e.target.value) && e.target.value !== "") {
+        document.getElementsByClassName("last-name-invalid")[0].style.display = "none";
+        invalidLastName = false
+      } else {
+        document.getElementsByClassName("last-name-invalid")[0].style.display = "initial";
+        invalidLastName = true
+      }
+    }),
+    document.getElementById("email").addEventListener("input", function(e) {
+      if (Store.state.regexEmail.test(e.target.value) && e.target.value !== "") {
+        document.getElementsByClassName("email-invalid")[0].style.display = "none";
+        invalidEmail = false
+      } else {
+        document.getElementsByClassName("email-invalid")[0].style.display = "initial";
+        invalidEmail = true
+      }
+    }),
+    document.getElementById("password").addEventListener("input", function(e) {
+      if (e.target.value !== "") {
+        document.getElementsByClassName("password-invalid")[0].style.display = "none";
+        invalidPassword = false
+      } else {
+        document.getElementsByClassName("password-invalid")[0].style.display = "initial";
+        invalidPassword = true
+      }
+    })
   }
 };
 </script>

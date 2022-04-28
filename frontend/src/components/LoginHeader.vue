@@ -9,14 +9,26 @@
       <router-link to="/create-post">Créer un post</router-link> |
       <router-link to="/my-posts">Mes posts</router-link> |||
       <router-link to="/profile">Profile</router-link> |
-      <router-link to="/" id="logout">Logout</router-link>
+      <router-link @click="logout" to="/" id="logout">Logout</router-link>
     </nav>
   </header>
 </template>
 
 <script>
 export default {
-  name: 'LogoutHeader'
+  name: 'LogoutHeader',
+  methods: {
+    logout() {
+      sessionStorage.removeItem("user");
+      window.location.href="http://localhost:8080/login"
+    }
+  },
+  mounted() {
+    if (sessionStorage.getItem("user") === null) {
+      sessionStorage.removeItem("user");
+      window.location.href="http://localhost:8080/login"
+    }
+  }
 }
 </script>
 

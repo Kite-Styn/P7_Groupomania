@@ -43,7 +43,7 @@ exports.signup = (req, res) => {
 
 exports.login = (req, res) => {
     const encryptedMail = CryptoJS.AES.encrypt(req.body.email, key, { iv: iv }).toString();
-    User.findByPk(encryptedMail)
+    User.findOne({ where: { email: encryptedMail}})
     .then(user => {
         if (!user) {
             return res.status(401).json({message: "User not found"})
