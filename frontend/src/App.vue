@@ -1,11 +1,5 @@
 <template>
   <div id="app">
-    <!--<header>
-      <nav>
-        <router-link to="/">Signup</router-link> |
-        <router-link to="/login">Login</router-link>
-      </nav>
-    </header>-->
     <router-view/>
   </div>
 </template>

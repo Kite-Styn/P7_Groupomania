@@ -1,13 +1,14 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const mysql = require("mysql2");
+//const { Sequelize } = require("sequelize");
 const path = require("path");
 require ("dotenv").config();
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 
 const userRoutes = require("./routes/user");
-const sauceRoutes = require("./routes/sauce");
+//const sauceRoutes = require("./routes/sauce");
 
 //Limits the number of requests for a given time per IP
 const limiter = rateLimit({
@@ -22,7 +23,21 @@ const app = express();
 app.use(helmet());
 app.use(limiter);
 
-const connection = mysql.createConnection({
+/*
+const sequelize = new Sequelize("groupomania", `${process.env.DEV_USER}`, `${process.env.DEV_PASS}`, {
+    host: "localhost",
+    dialect: "mysql"
+});
+(async () => {
+    try {
+        await sequelize.authenticate();
+        console.log('Connection has been established successfully.');
+    } catch (error) {
+        console.error('Unable to connect to the database:', error);
+    }
+})();*/
+
+/*const connection = mysql.createConnection({
     host     : "localhost",
     user     : `${process.env.DEV_USER}`,
     password : `${process.env.DEV_PASS}`,
@@ -32,7 +47,7 @@ const connection = mysql.createConnection({
 connection.connect(function(err) {
     if (err) throw err;
     console.log("Connected to MySQL");
-});
+});*/
 
 /*connection.query("SELECT * FROM exemple", function (err, result) {
     if (err) throw err;
@@ -57,7 +72,8 @@ app.use(bodyParser.json());
 
 app.use("/images", express.static(path.join(__dirname, "images")));
 
-/*app.use("/api/auth", userRoutes);
-app.use("/api/sauces", sauceRoutes);*/
+app.use("/api/auth", userRoutes);
+//app.use("/api/sauces", sauceRoutes);
 
+//module.exports = connection;
 module.exports = app;

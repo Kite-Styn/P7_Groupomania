@@ -12,7 +12,21 @@ var iv = CryptoJS.enc.Hex.parse(process.env.CRYPTO_IV);
 
 //Encrypts email with CryptoJS and hashes password with bcrypt
 exports.signup = (req, res, next) => {
-    //let cleanMail = sanitize(req.body.email);
+    console.log(req.body);
+    const user = new User({
+        first_name: req.body.first_name,
+        last_name: req.body.last_name,
+        email: req.body.email,
+        password: req.body.password
+    });
+    User.create(user, (err, data) => {
+        if (err) {
+            res.status(500).json({err})
+        } else {
+            res.status(201).json({message: "User created"})
+        }
+    })
+    /*//let cleanMail = sanitize(req.body.email);
     let cleanMail = req.body.email;
     const encryptedMail = CryptoJS.AES.encrypt(cleanMail, key, { iv: iv }).toString();
     bcrypt.hash(req.body.password, 10)
@@ -25,7 +39,7 @@ exports.signup = (req, res, next) => {
         .then(() => res.status(201).json({message: "User created"}))
         .catch(error => res.status(400).json({error}));
     })
-    .catch(error => res.status(500).json({error}));
+    .catch(error => res.status(500).json({error}));*/
 };
 
 //Compares encrypted email with CryptoJS and hashed password with bcrypt, also adds webtoken
