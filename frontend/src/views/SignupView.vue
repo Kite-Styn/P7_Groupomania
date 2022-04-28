@@ -31,7 +31,7 @@
         </div>
         <p class="required">* Champs requis</p>
       </form>
-      <button @click="redirect">Confirmer</button>
+      <button @click="signup">Confirmer</button>
     </main>
     <FooterTemp/>
   </div>
@@ -41,10 +41,10 @@
 import LogoutHeader from "@/components/LogoutHeader.vue";
 import FooterTemp from "@/components/Footer.vue";
 import Store from "@/store/index.js";
-let validFirstName = false;
-let validLastName = false;
-let validEmail = false;
-let validPassword = false;
+let invalidFirstName = false;
+let invalidLastName = false;
+let invalidEmail = false;
+let invalidPassword = false;
 export default {
   name: "SignupView",
   components: {
@@ -56,10 +56,10 @@ export default {
       document.getElementById("first_name").addEventListener("input", function(e) {
         if (Store.state.regexName.test(e.target.value) && e.target.value !== "") {
           document.getElementsByClassName("first-name-invalid")[0].style.display = "none";
-          validFirstName = true
+          invalidFirstName = false
         } else {
           document.getElementsByClassName("first-name-invalid")[0].style.display = "initial";
-          validFirstName = false
+          invalidFirstName = true
         }
       })
     },
@@ -67,10 +67,10 @@ export default {
       document.getElementById("last_name").addEventListener("input", function(e) {
         if (Store.state.regexName.test(e.target.value) && e.target.value !== "") {
           document.getElementsByClassName("last-name-invalid")[0].style.display = "none";
-          validLastName = true
+          invalidLastName = false
         } else {
           document.getElementsByClassName("last-name-invalid")[0].style.display = "initial";
-          validLastName = false
+          invalidLastName = true
         }
       })
     },
@@ -78,10 +78,10 @@ export default {
       document.getElementById("email").addEventListener("input", function(e) {
         if (Store.state.regexEmail.test(e.target.value) && e.target.value !== "") {
           document.getElementsByClassName("email-invalid")[0].style.display = "none";
-          validEmail = true
+          invalidEmail = false
         } else {
           document.getElementsByClassName("email-invalid")[0].style.display = "initial";
-          validEmail = false
+          invalidEmail = true
         }
       })
     },
@@ -89,21 +89,21 @@ export default {
       document.getElementById("password").addEventListener("input", function(e) {
         if (e.target.value !== "") {
           document.getElementsByClassName("password-invalid")[0].style.display = "none";
-          validPassword = true
+          invalidPassword = false
         } else {
           document.getElementsByClassName("password-invalid")[0].style.display = "initial";
-          validPassword = false
+          invalidPassword = true
         }
       })
     },
-    redirect() {
-      if (validFirstName === true && validLastName === true && validEmail === true && validPassword === true) {
-        let user = {
-          first_name: document.getElementById("first_name").value,
-          last_name: document.getElementById("last_name").value,
-          email: document.getElementById("email").value,
-          password: document.getElementById("password").value
-        };
+    signup() {
+      let user = {
+        first_name: document.getElementById("first_name").value,
+        last_name: document.getElementById("last_name").value,
+        email: document.getElementById("email").value,
+        password: document.getElementById("password").value
+      };
+      if (invalidFirstName === false && user.first_name !== "" && invalidLastName === false && user.last_name !== "" && invalidEmail === false && user.email !== "" && invalidPassword === false && user.password !== "") {
         fetch("http://localhost:3000/api/auth/signup", {
           method: "POST",
           headers : {
@@ -122,6 +122,29 @@ export default {
         });
         //window.location.href="http://localhost:8080/login"
       }
+    },
+    login() {
+      let user = {
+        email: document.getElementById("email").value,
+        password: document.getElementById("password").value
+      };
+      fetch("http://localhost:3000/api/auth/login", {
+        method: "POST",
+        headers : {
+          "Accept" : "application/json",
+          "Content-Type" : "application/json"
+        },
+        body: JSON.stringify(user)
+      })
+      .then(function(res) {
+        if (res.ok) {
+          console.log(res.json());
+          return res.json();
+        }
+      })
+      .catch(function(err) {
+        console.log(err)
+      });
     }
   }
 };

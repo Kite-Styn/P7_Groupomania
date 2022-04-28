@@ -4,14 +4,71 @@ const CryptoJS = require("crypto-js");
 //const sanitize = require("mongo-sanitize");
 require ("dotenv").config();
 
-const User = require("../models/User");
+const db = require("../models/db");
+const User = db.users;
+const Op = db.Sequelize.Op;
+
+//const User = require("../models/User");
 
 //Key and iv for CryptoJS encryption
 var key = CryptoJS.enc.Hex.parse(process.env.CRYPTO_KEY);
 var iv = CryptoJS.enc.Hex.parse(process.env.CRYPTO_IV);
 
+exports.signup = (req, res) => {
+    if (!req.body.email) {
+        res.status(400).send({
+          message: "Content can not be empty"
+        });
+        return;
+    }
+    const encryptedMail = CryptoJS.AES.encrypt(req.body.email, key, { iv: iv }).toString();
+    bcrypt.hash(req.body.password, 10)
+    .then(hash => {
+        const user = {
+        first_name: req.body.first_name,
+        last_name: req.body.last_name,
+        email: encryptedMail,
+        password: hash
+        };
+        User.create(user)
+        .then(data => {
+            res.status(201).json({message: "User created"});
+        })
+        .catch(err => {
+            res.status(500).json({err})
+        })
+    })
+    .catch(error => res.status(500).json({error}));
+};
+
+exports.login = (req, res) => {
+    const encryptedMail = CryptoJS.AES.encrypt(req.body.email, key, { iv: iv }).toString();
+    User.findByPk(encryptedMail)
+    .then(user => {
+        if (!user) {
+            return res.status(401).json({message: "User not found"})
+        }
+        bcrypt.compare(req.body.password, user.password)
+        .then(valid => {
+            if (!valid) {
+                return res.status(401).json({message: "Password incorrect"})
+            }
+            res.status(200).json({
+                userId: user.id,
+                token: jwt.sign(
+                    {userId: user._id},
+                    "RANDOM_TOKEN_SECRET",
+                    {expiresIn: "24h"}
+                )
+            });
+        })
+        .catch(error => res.status(500).json({error}));
+    })
+    .catch(error => res.status(500).json({error}));
+};
+
 //Encrypts email with CryptoJS and hashes password with bcrypt
-exports.signup = (req, res, next) => {
+/*exports.signup = (req, res, next) => {
     console.log(req.body);
     const user = new User({
         first_name: req.body.first_name,
@@ -26,7 +83,7 @@ exports.signup = (req, res, next) => {
             res.status(201).json({message: "User created"})
         }
     })
-    /*//let cleanMail = sanitize(req.body.email);
+    let cleanMail = sanitize(req.body.email);
     let cleanMail = req.body.email;
     const encryptedMail = CryptoJS.AES.encrypt(cleanMail, key, { iv: iv }).toString();
     bcrypt.hash(req.body.password, 10)
@@ -39,11 +96,11 @@ exports.signup = (req, res, next) => {
         .then(() => res.status(201).json({message: "User created"}))
         .catch(error => res.status(400).json({error}));
     })
-    .catch(error => res.status(500).json({error}));*/
-};
+    .catch(error => res.status(500).json({error}));
+};*/
 
 //Compares encrypted email with CryptoJS and hashed password with bcrypt, also adds webtoken
-exports.login = (req, res, next) => {
+/*exports.login = (req, res, next) => {
     //let cleanMail = sanitize(req.body.email);
     let cleanMail = req.body.email;
     const encryptedMail = CryptoJS.AES.encrypt(cleanMail, key, { iv: iv }).toString();
@@ -69,4 +126,4 @@ exports.login = (req, res, next) => {
         .catch(error => res.status(500).json({error}));
     })
     .catch(error => res.status(500).json({error}));
-};
+};*/

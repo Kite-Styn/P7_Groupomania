@@ -6,6 +6,7 @@ const path = require("path");
 require ("dotenv").config();
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
+const cors = require("cors");
 
 const userRoutes = require("./routes/user");
 //const sauceRoutes = require("./routes/sauce");
@@ -20,6 +21,7 @@ const limiter = rateLimit({
 
 const app = express();
 
+app.use(cors())
 app.use(helmet());
 app.use(limiter);
 
@@ -74,6 +76,9 @@ app.use("/images", express.static(path.join(__dirname, "images")));
 
 app.use("/api/auth", userRoutes);
 //app.use("/api/sauces", sauceRoutes);
+
+const db = require("./models/db");
+//db.sequelize.sync();
 
 //module.exports = connection;
 module.exports = app;

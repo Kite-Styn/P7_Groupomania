@@ -9,7 +9,7 @@ const userSchema = mongoose.Schema({
 userSchema.plugin(uniqueValidator);
 
 module.exports = mongoose.model("User", userSchema);*/
-const connection = require("./db");
+/*const connection = require("./db");
 const mysql = require("mysql2");
 
 const User = function(user) {
@@ -31,4 +31,23 @@ User.create = function(newUser, result) {
     });
 };
 
-module.exports = User;
+module.exports = User;*/
+module.exports = (sequelize, Sequelize) => {
+    const User = sequelize.define("user", {
+      first_name: {
+        type: Sequelize.STRING
+      },
+      last_name: {
+        type: Sequelize.STRING
+      },
+      email: {
+        type: Sequelize.STRING
+      },
+      password: {
+          type: Sequelize.STRING
+      }
+    }, {
+        timestamps: false
+    });
+    return User;
+  };
