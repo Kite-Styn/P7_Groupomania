@@ -44,7 +44,7 @@ export default {
       if (invalidEmail === false && user.email !== "" && invalidPassword === false && user.password !== "") {
         let resLog = await fetch("http://localhost:3000/api/auth/login", {
           method: "POST",
-          headers : {
+          headers: {
             "Accept" : "application/json",
             "Content-Type" : "application/json"
           },
@@ -55,7 +55,7 @@ export default {
         }
         let dataLog = await resLog.json();
         console.log(dataLog);
-        sessionStorage.setItem("user", `userId: ${dataLog.userId}, token: ${dataLog.token}`);
+        sessionStorage.setItem("user", JSON.stringify(dataLog));
         window.location.href="http://localhost:8080/posts"
       }
     }

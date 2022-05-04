@@ -6,14 +6,9 @@
       <h1>Créer un compte</h1>
       <form>
         <div>
-          <label for="first name">Prénom<span class="required">*</span> : </label>
-          <input @keydown="filterFirstName" type="text" name="first name" id="first_name">
-          <p class="first-name-invalid error-invalid">Veuillez entrer un prénom valide</p>
-        </div>
-        <div>
-          <label for="last name">Nom<span class="required">*</span> : </label>
-          <input @keydown="filterLastName" type="text" name="last name" id="last_name">
-          <p class="last-name-invalid error-invalid">Veuillez entrer un nom valide</p>
+          <label for="username">Nom d'utilisateur<span class="required">*</span> : </label>
+          <input @keydown="filterUsername" type="text" name="username" id="username">
+          <p class="username-invalid error-invalid">Veuillez entrer un nom d'utilisateur valide</p>
         </div>
         <div>
           <label for="email">E-mail<span class="required">*</span> : </label>
@@ -26,7 +21,7 @@
           <p class="password-invalid error-invalid">Veuillez entrer un mot de passe valide</p>
         </div>
         <div>
-          <label for="photo">Ajouter une photo :</label>
+          <label for="picture">Ajouter une photo :</label>
           <input type="file" id="picture" accept=".png, .jpg, .jpeg">
         </div>
         <p class="required">* Champs requis</p>
@@ -41,8 +36,7 @@
 import LogoutHeader from "@/components/LogoutHeader.vue";
 import FooterTemp from "@/components/Footer.vue";
 import Store from "@/store/index.js";
-let invalidFirstName = false;
-let invalidLastName = false;
+let invalidUsername = false;
 let invalidEmail = false;
 let invalidPassword = false;
 export default {
@@ -53,21 +47,19 @@ export default {
   },
   data() {
     return {
-      regexName: /^[^±!@£$%^&*_+¡€#¢§¶•ªº()"«\\/{}[\]~<>?:;|=.,\d\s]+$/,
     }
   },
   methods: {
     async signup() {
       let user = {
-        first_name: document.getElementById("first_name").value,
-        last_name: document.getElementById("last_name").value,
+        username: document.getElementById("username").value,
         email: document.getElementById("email").value,
         password: document.getElementById("password").value
       };
-      if (invalidFirstName === false && user.first_name !== "" && invalidLastName === false && user.last_name !== "" && invalidEmail === false && user.email !== "" && invalidPassword === false && user.password !== "") {
+      if (invalidUsername === false && user.username !== "" && invalidEmail === false && user.email !== "" && invalidPassword === false && user.password !== "") {
         let res = await fetch("http://localhost:3000/api/auth/signup", {
           method: "POST",
-          headers : {
+          headers: {
             "Accept" : "application/json",
             "Content-Type" : "application/json"
           },
@@ -78,9 +70,10 @@ export default {
         }
         let data = await res.json();
         console.log(data);
-        let resLog = await fetch("http://localhost:3000/api/auth/login", {
+        //Uncomment below to also login after a signup (and change the redirect to another page instead of login)
+        /*let resLog = await fetch("http://localhost:3000/api/auth/login", {
           method: "POST",
-          headers : {
+          headers: {
             "Accept" : "application/json",
             "Content-Type" : "application/json"
           },
@@ -91,28 +84,19 @@ export default {
         }
         let dataLog = await resLog.json();
         console.log(dataLog);
-        sessionStorage.setItem("user", `userId: ${dataLog.userId}, token: ${dataLog.token}`);
-        window.location.href="http://localhost:8080/posts"
+        sessionStorage.setItem("user", JSON.stringify(dataLog));*/
+        window.location.href="http://localhost:8080/login"
       }
     },
   },
   mounted() {
-    document.getElementById("first_name").addEventListener("input", function(e) {
+    document.getElementById("username").addEventListener("input", function(e) {
       if (Store.state.regexName.test(e.target.value) && e.target.value !== "") {
-        document.getElementsByClassName("first-name-invalid")[0].style.display = "none";
-        invalidFirstName = false
+        document.getElementsByClassName("username-invalid")[0].style.display = "none";
+        invalidUsername = false
       } else {
-        document.getElementsByClassName("first-name-invalid")[0].style.display = "initial";
-        invalidFirstName = true
-      }
-    }),
-    document.getElementById("last_name").addEventListener("input", function(e) {
-      if (Store.state.regexName.test(e.target.value) && e.target.value !== "") {
-        document.getElementsByClassName("last-name-invalid")[0].style.display = "none";
-        invalidLastName = false
-      } else {
-        document.getElementsByClassName("last-name-invalid")[0].style.display = "initial";
-        invalidLastName = true
+        document.getElementsByClassName("username-invalid")[0].style.display = "initial";
+        invalidUsername = true
       }
     }),
     document.getElementById("email").addEventListener("input", function(e) {
@@ -183,9 +167,10 @@ button {
   background-color: blue;
   color: white;
   border-radius: 15%/50%;
-  width: 120px;
-  height: 40px;
+  min-width: 120px;
+  min-height: 40px;
   font-size: large;
+  padding: 10px;
 }
 
 .required {

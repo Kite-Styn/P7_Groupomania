@@ -6,10 +6,9 @@
     </div>
     <nav id="nav">
       <router-link to="/posts">Posts</router-link> |
-      <router-link to="/create-post">Créer un post</router-link> |
-      <router-link to="/my-posts">Mes posts</router-link> |||
-      <router-link to="/profile">Profile</router-link> |
-      <router-link @click="logout" to="/" id="logout">Logout</router-link>
+      <router-link to="/create-post">Créer un post</router-link> |||
+      <router-link to="/profile">Profil</router-link> |
+      <router-link @click="logout" to="/login" id="logout">Logout</router-link>
     </nav>
   </header>
 </template>
@@ -28,6 +27,8 @@ export default {
       sessionStorage.removeItem("user");
       window.location.href="http://localhost:8080/login"
     }
+    let userData = JSON.parse(sessionStorage.getItem("user"));
+    document.body.style.backgroundColor = userData.themeColor;
   }
 }
 </script>

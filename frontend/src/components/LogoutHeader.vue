@@ -13,7 +13,12 @@
 
 <script>
 export default {
-    name: "LogoutHeader"
+    name: "LogoutHeader",
+    mounted() {
+      if (sessionStorage.getItem("user") !== null) {
+        window.location.href="http://localhost:8080/posts"
+      }
+    }
 }
 </script>
 
