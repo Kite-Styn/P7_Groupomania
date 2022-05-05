@@ -20,10 +20,6 @@
           <input @keydown="filterPassword" type="text" name="password" id="password">
           <p class="password-invalid error-invalid">Veuillez entrer un mot de passe valide</p>
         </div>
-        <div>
-          <label for="picture">Ajouter une photo :</label>
-          <input type="file" id="picture" accept=".png, .jpg, .jpeg">
-        </div>
         <p class="required">* Champs requis</p>
       </form>
       <button @click="signup">Confirmer</button>

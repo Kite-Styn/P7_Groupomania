@@ -8,7 +8,8 @@
           <div>
             <img id="profile-image" src="http://localhost:3000/images/user-default.png" alt="Image profil">
           </div>
-          <button>Modifier l'image profil</button>
+          <input type="file" name="new-picture" id="new-picture" accept=".png, .jpg, .jpeg">
+          <button @click="changePicture">Modifier l'image profil</button>
         </div>
         <div id="user-info-data">
           <p class="bold">Nom d'utilisateur : <span id="username">Utilisateur</span></p>
@@ -52,6 +53,46 @@ export default {
     }
   },
   methods: {
+    async changePicture() {
+      let userPicture = document.getElementById("new-picture");
+      console.log(userPicture.files[0]);
+      if (userPicture.files[0] == undefined) {
+        return
+      }
+      let userData = JSON.parse(sessionStorage.getItem("user"));
+      let formData = new FormData();
+      formData.append("image", userPicture.files[0]);
+      formData.append("user", userData);
+      console.log(formData);
+      let res = await fetch(`http://localhost:3000/api/auth/image/${userData.userId}`, {
+        method: "PUT",
+        headers: {
+          "Accept" : "application/json",
+          //"Content-Type" : "application/json",
+          "Authorization" : `Bearer ${userData.token}`
+        },
+        body: formData
+      });
+      if (!res.ok) {
+        throw new Error()
+      }
+      let data = await res.json();
+      console.log(data);
+      let resGet = await fetch(`http://localhost:3000/api/auth/${userData.userId}`, {
+        method: "GET",
+        headers: {
+          "Accept" : "application/json",
+          "Content-Type" : "application/json",
+          "Authorization" : `Bearer ${userData.token}`
+        }
+      });
+      if (!resGet.ok) {
+        throw new Error()
+      }
+      let dataGet = await resGet.json();
+      console.log(dataGet);
+      document.getElementById("profile-image").src = dataGet.picture;
+    },
     deleteAccount() {
       let userId = JSON.parse(sessionStorage.getItem("user"));
       console.log(userId);
@@ -118,6 +159,7 @@ export default {
     console.log(data);
     document.getElementById("username").textContent = data.username;
     document.getElementById("email").textContent = data.email;
+    document.getElementById("profile-image").src = data.picture;
   }
 }
 </script>
@@ -153,7 +195,8 @@ export default {
 
 #profile-image {
   border: blue solid 2px;
-  border-radius: 50%
+  border-radius: 50%;
+  max-width: 255px;
 }
 
 .bold {

@@ -86,8 +86,7 @@ exports.findOne = (req, res) => {
 
 exports.updateColor = (req, res) => {
     const id = req.params.id;
-    console.log(req.body.themeColor);
-    User.update({ theme_color: req.body.themeColor }, { where : { id : id }})
+    User.update({ theme_color: req.body.themeColor }, { where: { id: id }})
     .then(num => {
         if (num == 1) {
             res.status(200).send({ message: "User updated successfully"})
@@ -98,28 +97,87 @@ exports.updateColor = (req, res) => {
     .catch(err => {
         res.status(500).send({ message: "Error updating user with id="+id})
     })
-}
+};
 
-exports.delete = (req, res) => {
+exports.updateImage = (req, res) => {
     const id = req.params.id;
-    User.destroy({ where: { id: id } })
-    .then(num => {
-        if (num == 1) {
-            res.status(200).send({
-                message: "User deleted successfully"
+    let user = {
+        picture: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`
+    };
+    User.findByPk(id)
+    .then(data => {
+        if (data) {
+            var oldPicture = data.picture.split("/images/")[1];
+            if (oldPicture !== "user-default.png") {
+                fs.unlink(`images/${oldPicture}`, () => {
+                    console.log("Old image deleted")
+                });
+            }
+            User.update({ picture: user.picture }, { where: { id: id}})
+            .then(num => {
+                if (num == 1) {
+                    res.status(200).send({ message: "User updated successfully"})
+                } else {
+                    res.status(500).send({ message: "Could not update user with id="+id})
+                }
+            })
+            .catch(err => {
+                res.status(500).send({ message: "Error updating user with id="+id})
             })
         } else {
             res.status(404).send({
-                message: `Cannot delete User with id=${id}, maybe it was not found`
-            })
+            message: `Cannot find User with id=${id}.`
+            });
         }
     })
     .catch(err => {
         res.status(500).send({
-            message: "Could not delete User with id=" + id
-        })
+            message: "Error retrieving User with id=" + id
+        });
+    });
+    
+};
+
+exports.delete = (req, res) => {
+    const id = req.params.id;
+    User.findByPk(id)
+    .then(data => {
+        if (data) {
+            var oldPicture = data.picture.split("/images/")[1];
+            if (oldPicture !== "user-default.png") {
+                fs.unlink(`images/${oldPicture}`, () => {
+                    console.log("Old image deleted")
+                });
+            }
+            User.destroy({ where: { id: id } })
+            .then(num => {
+                if (num == 1) {
+                    res.status(200).send({
+                        message: "User deleted successfully"
+                    })
+                } else {
+                    res.status(404).send({
+                        message: `Cannot delete User with id=${id}, maybe it was not found`
+                    })
+                }
+            })
+            .catch(err => {
+                res.status(500).send({
+                    message: "Could not delete User with id=" + id
+                })
+            })
+        } else {
+            res.status(404).send({
+            message: `Cannot find User with id=${id}.`
+            });
+        }
     })
-}
+    .catch(err => {
+        res.status(500).send({
+            message: "Error retrieving User with id=" + id
+        });
+    });
+};
 
 //Encrypts email with CryptoJS and hashes password with bcrypt
 /*exports.signup = (req, res, next) => {
