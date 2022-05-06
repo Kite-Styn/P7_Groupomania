@@ -16,7 +16,8 @@ const Sequelize = require("sequelize");
 
 const sequelize = new Sequelize("groupomania", `${process.env.DEV_USER}`, `${process.env.DEV_PASS}`, {
     host: "localhost",
-    dialect: "mysql"
+    dialect: "mysql",
+    timezone: '+02:00' //for writing to database
 });
 (async () => {
     try {

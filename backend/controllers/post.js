@@ -6,13 +6,13 @@ const Op = db.Sequelize.Op;
 
 
 exports.createPost = (req, res) => {
-    console.log(req.body);
-    const id = req.body.userId;
+    let userData = JSON.parse(req.body.user);
+    const id = userData.userId;
     User.findByPk(id)
     .then(data => {
         if (data) {
             const post = {
-            title: req.body.title,
+            title: userData.title,
             image_url: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`,
             author: data.username,
             author_id: id,

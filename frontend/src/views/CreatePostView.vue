@@ -5,8 +5,8 @@
       <h1>Créer un post</h1>
       <div id="post-data">
         <div>
-          <label for="post-title">Titre du post : </label>
-          <input type="text" name="post-title" id="post-title">
+          <label for="post-title">Titre du post : <br>100 caractères max</label>
+          <textarea type="text" maxlength="100" rows="2" cols="40" name="post-title" id="post-title"></textarea>
         </div>
         <div>
           <label for="post-image">Sélectionnez une image : </label>
@@ -37,13 +37,12 @@ export default {
         title: postTitle,
         userId: userData.userId
       };
-      console.log(user);
       if (userData == null || postImage == undefined || postTitle == "") {
         return
       }
       let formData = new FormData();
       formData.append("image", postImage);
-      formData.append("user", user);
+      formData.append("user", JSON.stringify(user));
       let res = await fetch("http://localhost:3000/api/post/create", {
         method: "POST",
         headers: {
@@ -58,6 +57,7 @@ export default {
       }
       let data = await res.json();
       console.log(data);
+      window.location.href="http://localhost:8080/posts";
     }
   }
 }
@@ -68,6 +68,13 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
+  gap: 30px;
+  & div {
+    display: flex;
+    align-items: center;
+    & label {
+      margin: 5px;
+    }
+  }
 }
 </style>
