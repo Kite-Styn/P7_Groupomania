@@ -196,7 +196,9 @@ export default {
 #profile-image {
   border: blue solid 2px;
   border-radius: 50%;
-  max-width: 255px;
+  width: 255px;
+  height: 255px;
+  object-fit: cover;
 }
 
 .bold {

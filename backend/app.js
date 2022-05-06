@@ -9,7 +9,7 @@ const rateLimit = require("express-rate-limit");
 const cors = require("cors");
 
 const userRoutes = require("./routes/user");
-//const sauceRoutes = require("./routes/sauce");
+const postRoutes = require("./routes/post");
 
 //Limits the number of requests for a given time per IP
 const limiter = rateLimit({
@@ -75,7 +75,7 @@ app.use(bodyParser.json());
 app.use("/images", express.static(path.join(__dirname, "images")));
 
 app.use("/api/auth", userRoutes);
-//app.use("/api/sauces", sauceRoutes);
+app.use("/api/post", postRoutes);
 
 const db = require("./models/db");
 //db.sequelize.sync();
