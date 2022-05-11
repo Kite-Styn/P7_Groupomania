@@ -4,7 +4,7 @@ import Login from '../views/LoginView.vue'
 import Profile from '../views/ProfileView.vue'
 import Posts from '../views/PostsView.vue'
 import CreatePost from '../views/CreatePostView.vue'
-import MyPosts from '../views/MyPostsView.vue'
+import Post from '../views/PostView.vue'
 
 const routes = [
   {
@@ -34,9 +34,9 @@ const routes = [
     name: 'create-post',
     component: CreatePost
   },{
-    path: '/my-posts',
-    name: 'my-posts',
-    component: MyPosts
+    path: '/post/:id',
+    name: 'post',
+    component: Post
   },
 ]
 

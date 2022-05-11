@@ -14,7 +14,7 @@ module.exports = (sequelize, Sequelize) => {
       author_id: {
         type: Sequelize.INTEGER
       },
-      rating: {
+      score: {
         type: Sequelize.INTEGER
       },
       comment_count: {
