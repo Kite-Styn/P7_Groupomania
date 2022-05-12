@@ -58,6 +58,9 @@ export default {
     width: 25%;
     border-radius: 15px;
     margin-bottom: 50px;
+    & a {
+        text-decoration: none;
+    }
     & div {
         border-radius: 15px;
         background-color: #80808070;

@@ -3,17 +3,17 @@
     <LoginHeader/>
     <div class="content">
       <main>
-      <div id="post-card">
-        <h2>{{currentPost.title}}</h2>
-        <div>
-          <img :src="currentPost.image_url" alt="Post">
+        <div id="post-card">
+          <h2>{{currentPost.title}}</h2>
+          <div>
+            <img :src="currentPost.image_url" alt="Post">
+          </div>
+          <div>
+            <p class="bold">{{currentPost.author}}</p>
+            <p>{{currentPost.comment_count}} commentaires</p>
+            <p>{{currentPost.score}}</p>
+          </div>
         </div>
-        <div>
-          <p class="bold">{{currentPost.author}}</p>
-          <p>{{currentPost.comment_count}} commentaires</p>
-          <p>{{currentPost.score}}</p>
-        </div>
-      </div>
       </main>
       <NewPosts/>
     </div>
@@ -77,7 +77,7 @@ export default {
 #post-card {
   & img {
     max-width: 95%;
-    max-height: 750px;
+    max-height: 600px;
     object-fit: contain;
   }
   & div {

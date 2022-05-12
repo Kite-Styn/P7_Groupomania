@@ -43,7 +43,7 @@ exports.createPost = (req, res) => {
 };
 
 exports.latest = (req, res) => {
-    Post.findAll({ order: [["date", "DESC"]], limit: 3})
+    Post.findAll({ order: [["date", "DESC"]], limit: 3 })
     .then(data => {
         res.status(200).json(data)
     })
@@ -57,4 +57,10 @@ exports.getPost = (req, res) => {
     Post.findByPk(id)
     .then(data => res.status(200).json(data))
     .catch(err => res.status(500).json(err))
-}
+};
+
+exports.getPosts = (req, res) => {
+    Post.findAll({ order: [["date", "DESC"]], limit: 10 })
+    .then(data => {res.status(200).json(data)})
+    .catch(err => {res.status(500).json(err)})
+};
