@@ -47,14 +47,21 @@ exports.login = (req, res) => {
             if (!valid) {
                 return res.status(401).json({message: "Password incorrect"})
             }
+            let isAdmin = false;
+            console.log(user);
+            if (user.is_admin == true) {
+                isAdmin = true
+            }
             res.status(200).json({
                 userId: user.id,
+                username: user.username,
                 token: jwt.sign(
                     {userId: user.id},
                     "RANDOM_TOKEN_SECRET",
                     {expiresIn: "24h"}
                 ),
-                themeColor: user.theme_color
+                themeColor: user.theme_color,
+                isAdmin: isAdmin
             });
         })
         .catch(error => res.status(500).json({error}));

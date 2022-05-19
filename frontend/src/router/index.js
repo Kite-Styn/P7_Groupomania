@@ -28,7 +28,6 @@ const routes = [
   },{
     path: '/posts',
     name: 'posts',
-    alias: '/posts/:page',
     component: Posts
   },{
     path: '/create-post',

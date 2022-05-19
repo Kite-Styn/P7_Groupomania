@@ -1,6 +1,6 @@
 <template>
     <aside id="new-posts">
-        <h2>Nouveaux posts</h2>
+        <h2>Les 3 derniers posts</h2>
         <router-link id="latest-one-link" :to="{ name: 'post', params:{id: currentNewPosts[0].id} }">
             <div>
                 <h3 id="latest-one-title">{{currentNewPosts[0].title}}</h3>

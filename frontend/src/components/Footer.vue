@@ -3,21 +3,21 @@
     <img src="../assets/icon-left-font-monochrome-black.png" alt="Logo groupomania">
     <div>
       <h3>Contact</h3>
-      <p>Addresse</p>
-      <p>Téléphone</p>
-      <p>E-mail</p>
+      <p>Addresse : 12 Rue du Banc</p>
+      <p>Téléphone : 01 23 45 67 89</p>
+      <p>E-mail : groupomail@gmail.com</p>
     </div>
     <div>
       <h3>Management</h3>
-      <p>Agent 1</p>
-      <p>Agent 2</p>
-      <p>Agent 3</p>
+      <p>Pierre Dufond</p>
+      <p>Sophie Mara</p>
+      <p>Rose Tess</p>
     </div>
     <div>
       <h3>Règles</h3>
-      <p>Règle 1</p>
-      <p>Règle 2</p>
-      <p>Règle 3</p>
+      <p>1. Restez polis</p>
+      <p>2. Respectez vous</p>
+      <p>3. Ne postez rien d'illégal</p>
     </div>
   </footer>
 </template>

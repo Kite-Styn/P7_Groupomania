@@ -59,7 +59,7 @@ exports.getPost = (req, res) => {
     .catch(err => res.status(500).json(err))
 };
 
-exports.getPosts = (req, res) => {
+exports.getAllPosts = (req, res) => {
     Post.findAll({ order: [["date", "DESC"]], limit: 10 })
     .then(data => {res.status(200).json(data)})
     .catch(err => {res.status(500).json(err)})

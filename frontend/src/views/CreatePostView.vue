@@ -5,8 +5,8 @@
       <h1>Créer un post</h1>
       <div id="post-data">
         <div>
-          <label for="post-title">Titre du post : <br>100 caractères max</label>
-          <textarea type="text" maxlength="100" rows="2" cols="40" name="post-title" id="post-title"></textarea>
+          <label for="post-title">Titre du post : <br>255 caractères max</label>
+          <textarea type="text" maxlength="255" rows="2" cols="40" name="post-title" id="post-title"></textarea>
         </div>
         <div>
           <label for="post-image">Sélectionnez une image : </label>

@@ -16,6 +16,9 @@ module.exports = (sequelize, Sequelize) => {
     theme_color: {
       type: Sequelize.STRING,
       defaultValue: "#c2bebe"
+    },
+    is_admin: {
+      type: Sequelize.BOOLEAN
     }
   }, {
       timestamps: false
