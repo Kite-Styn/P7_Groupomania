@@ -11,9 +11,9 @@ Instructions below.
 -First, you must create a database to use for the project.
 You can do it through a terminal by logging in to your mysql account with: "mysql -u root -p", and 
 then entering your password.
-Create a database with: "create database database-name;"
+Create a database with: "create database groupomania;"
 Then exit the mysql interface with "exit;" and copy the database file into your database with: 
-"mysql -u root -p databasename < c:/filepath-here/db.sql" and then entering your password.
+"mysql -u root -p groupomania < c:/filepath-here/db.sql" and then entering your password.
 -Now, navigate to the backend folder with a terminal and run: "npm install" to install the dependencies.
 You must rename the ".env-copy" file to ".env" and insert your mysql username and password in the DEV_USER 
 and DEV_PASS fields within the file.
