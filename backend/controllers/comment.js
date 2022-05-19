@@ -56,6 +56,37 @@ exports.modifyComment = (req, res) => {
     .catch(err => {res.status(500).send(err)})
 };
 
+exports.replyComment = (req, res) => {
+    let userData = req.body;
+    const id = userData.userId;
+    User.findByPk(id)
+    .then(data => {
+        const comment = {
+            related_post: userData.related_post,
+            related_comment: userData.related_comment,
+            reply_username: userData.reply_username,
+            author: data.username,
+            author_id: id,
+            content: userData.replyContent,
+            score: 0
+        };
+        Comment.create(comment)
+        .then(data => {
+            Post.increment({ comment_count: +1 }, { where: {id: userData.related_post} })
+            .then(postData => {res.status(200).send({ message: "Comment created" })})
+            .catch(err => {res.status(500).json(err)})
+        })
+        .catch(err => {
+            res.status(500).send({ message: "Comment not created" })
+        })
+    })
+    .catch(err => {
+        res.status(500).send({
+            message: "Error retrieving User with id=" + id
+        });
+    });
+};
+
 exports.deleteComment = (req, res) => {
     User.findByPk(req.body.userId)
     .then(user => {

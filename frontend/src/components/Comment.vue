@@ -1,10 +1,15 @@
 <template>
     <div class="comment">
         <p><span class="bold">{{ author }}</span> - {{ date.replace(`T`, ` `).replace(`.000Z`, ``) }} <span class="grey" v-if='edit_date !== null' :title="'modifié le:' + edit_date.replace(`T`, ` `).replace(`.000Z`, ``) || edit_date">*</span> - {{ score }} pts</p>
-        <p>{{ content }}</p>
+        <p><span class="bold" v-if="reply_username !== null">@{{ reply_username }}</span> {{ content }}</p>
         <div class="comment-buttons-block">
+            <button @click="replyComment" class="reply-comment-button">Répondre</button>
             <button @click="modifyComment" class="modify-comment-button" v-if="isAuthor">Modifier</button>
             <button @click="deleteComment" class="delete-comment-button" v-if="isAuthorOrAdmin">Supprimer</button>
+        </div>
+        <div class="reply-confirm" v-show="replyCommentDisplay">
+            <textarea name="reply-comment" class="reply-comment" cols="50" rows="3" v-model="replyContent"></textarea>
+            <button @click="replyCommentConfirm" class="reply-comment-button">Envoyer</button>
         </div>
         <div class="modify-confirm" v-show="modifyCommentDisplay">
             <textarea name="modify-comment" class="modify-comment" cols="50" rows="3" v-model="newContent"></textarea>
@@ -20,22 +25,55 @@
 <script>
 export default {
     name: "CommentTemplate",
-    props: ["author", "date", "edit_date", "score", "content"],
+    props: ["author", "date", "edit_date", "score", "reply_username", "content"],
     data() {
         return {
             isAuthor: false,
             isAuthorOrAdmin: false,
+            replyCommentDisplay: false,
             modifyCommentDisplay: false,
             deleteCommentDisplay: false,
+            replyContent: "",
             newContent: ""
         }
     },
     methods: {
+        replyComment() {
+            this.replyCommentDisplay = !this.replyCommentDisplay
+        },
         modifyComment() {
             this.modifyCommentDisplay = !this.modifyCommentDisplay
         },
         deleteComment() {
             this.deleteCommentDisplay = !this.deleteCommentDisplay
+        },
+        async replyCommentConfirm() {
+            let userData = JSON.parse(sessionStorage.getItem("user"));
+            let comment = {
+                userId: userData.userId,
+                related_post: this.$route.params.id,
+                related_comment: this.$.vnode.key,
+                reply_username: this.author,
+                replyContent: this.replyContent
+            };
+            if (comment.replyContent == "") {
+                return
+            }
+            let res = await fetch("http://localhost:3000/api/comment/reply", {
+            method: "POST",
+            headers: {
+            "Accept" : "application/json",
+            "Content-Type" : "application/json",
+            "Authorization" : `Bearer ${userData.token}`
+            },
+            body: JSON.stringify(comment)
+            });
+            if (!res.ok) {
+                throw new Error()
+            }
+            let data = await res.json();
+            console.log(data);
+            window.location.href=`http://localhost:8080/post/${this.$route.params.id}`
         },
         async modifyCommentConfirm() {
             let userData = JSON.parse(sessionStorage.getItem("user"));
@@ -111,6 +149,15 @@ export default {
     }
 }
 
+.reply-comment-button {
+    border-radius: 0;
+    background-color: black;
+    min-width: auto;
+    min-height: auto;
+    padding: 2px;
+    font-size: revert;
+}
+
 .modify-comment-button {
     border-radius: 0;
     background-color: darkgreen;
@@ -133,6 +180,10 @@ export default {
     border: red solid 2px;
     align-self: center;
     padding: 5px;
+    margin: 5px;
+}
+
+.reply-comment {
     margin: 5px;
 }
 

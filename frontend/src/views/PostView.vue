@@ -25,6 +25,7 @@
         :date="i.date"
         :edit_date="i.edit_date"
         :score="i.score"
+        :reply_username="i.reply_username"
         :content="i.content"/>
       </main>
       <NewPosts/>
@@ -64,6 +65,7 @@ export default {
           date: "",
           edit_date: "",
           score: 0,
+          reply_username: "",
           content: ""
         }
       ]

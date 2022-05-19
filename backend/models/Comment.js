@@ -8,6 +8,9 @@ module.exports = (sequelize, Sequelize) => {
       related_comment: {
         type: Sequelize.INTEGER
       },
+      reply_username: {
+          type: Sequelize.STRING
+      },
       author: {
         type: Sequelize.STRING
       },
