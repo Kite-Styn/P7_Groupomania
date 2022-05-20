@@ -11,6 +11,7 @@
         :author="i.author"
         :comment_count="i.comment_count"
         :score="i.score"/>
+        <p v-show="postsList != null">Il n'y a aucun post à afficher, désolé</p>
       </main>
       <NewPosts/>
     </div>
