@@ -15,7 +15,7 @@ module.exports = connection;*/
 const Sequelize = require("sequelize");
 
 const sequelize = new Sequelize(`${process.env.DATABASE}`, `${process.env.DEV_USER}`, `${process.env.DEV_PASS}`, {
-    host: "localhost",
+    host: "localhost",//127.0.0.1 for mac
     dialect: "mysql",
     timezone: '+02:00' //for writing to database
 });

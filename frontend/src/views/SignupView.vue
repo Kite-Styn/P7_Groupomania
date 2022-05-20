@@ -17,7 +17,7 @@
         </div>
         <div>
           <label for="password">Mot de passe<span class="required">*</span> : </label>
-          <input @keydown="filterPassword" type="text" name="password" id="password">
+          <input @keydown="filterPassword" type="password" name="password" id="password">
           <p class="password-invalid error-invalid">Veuillez entrer un mot de passe valide</p>
         </div>
         <p class="required">* Champs requis</p>
