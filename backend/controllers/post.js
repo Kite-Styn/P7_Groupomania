@@ -16,7 +16,7 @@ exports.createPost = (req, res) => {
             image_url: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`,
             author: data.username,
             author_id: id,
-            rating: 0,
+            score: 0,
             comment_count: 0
             };
             Post.create(post)
