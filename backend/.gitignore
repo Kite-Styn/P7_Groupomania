@@ -3,3 +3,4 @@ node_modules
 /images/*
 !images
 !images/.gitkeep
+!images/*user-default.png
