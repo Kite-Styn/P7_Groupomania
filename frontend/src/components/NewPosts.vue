@@ -1,5 +1,5 @@
 <template>
-    <aside id="new-posts">
+    <aside v-show="notEmpty" id="new-posts">
         <h2>Les 3 derniers posts</h2>
         <router-link id="latest-one-link" :to="{ name: 'post', params:{id: currentNewPosts[0].id} }">
             <div>
@@ -7,13 +7,13 @@
                 <img id="latest-one-img" :src="currentNewPosts[0].image_url" alt="Latest post 1">
             </div>
         </router-link>
-        <router-link id="latest-two-link" :to="{ name: 'post', params:{id: currentNewPosts[1].id} }">
+        <router-link v-if="currentNewPosts[1].title != ''" id="latest-two-link" :to="{ name: 'post', params:{id: currentNewPosts[1].id} }">
             <div>
                 <h3 id="latest-two-title">{{currentNewPosts[1].title}}</h3>
                 <img id="latest-two-img" :src="currentNewPosts[1].image_url" alt="Latest post 2">
             </div>
         </router-link>
-        <router-link id="latest-three-link" :to="{ name: 'post', params:{id: currentNewPosts[2].id} }">
+        <router-link v-if="currentNewPosts[2].title != ''" id="latest-three-link" :to="{ name: 'post', params:{id: currentNewPosts[2].id} }">
             <div>
                 <h3 id="latest-three-title">{{currentNewPosts[2].title}}</h3>
                 <img id="latest-three-img" :src="currentNewPosts[2].image_url" alt="Latest post 3">
@@ -33,7 +33,8 @@ export default {
                 {id:1, title: "", image_url: ""},
                 {id:2, title: "", image_url: ""},
                 {id:3, title: "", image_url: ""},
-            ]
+            ],
+            notEmpty: false
         }
     },
     async created() {
@@ -48,7 +49,18 @@ export default {
             throw new Error()
         }
         let data = await res.json();
-        this.currentNewPosts = data;
+        if (data[0] != undefined) {
+            this.notEmpty = true
+        }
+        if (data[0] !== undefined) {
+            this.currentNewPosts[0] = data[0]
+        }
+        if (data[1] !== undefined) {
+            this.currentNewPosts[1] = data[1]
+        }
+        if (data[2] !== undefined) {
+            this.currentNewPosts[2] = data[2]
+        }
     }
 }
 </script>

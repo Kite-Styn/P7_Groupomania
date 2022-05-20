@@ -17,6 +17,7 @@
         </div>
         <p class="required">* Champs requis</p>
       </form>
+      <p v-if="wrongId" class="red">Identifiants incorrects</p>
       <button @click="login">Login</button>
     </main>
     <FooterTemp/>
@@ -35,6 +36,11 @@ export default {
     LogoutHeader,
     FooterTemp
   },
+  data() {
+    return {
+      wrongId: false
+    }
+  },
   methods: {
     async login() {
       let user = {
@@ -51,6 +57,7 @@ export default {
           body: JSON.stringify(user)
         });
         if (!resLog.ok) {
+          this.wrongId = true;
           throw new Error()
         }
         let dataLog = await resLog.json();
