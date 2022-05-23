@@ -48,7 +48,6 @@ exports.login = (req, res) => {
                 return res.status(401).json({message: "Password incorrect"})
             }
             let isAdmin = false;
-            console.log(user);
             if (user.is_admin == true) {
                 isAdmin = true
             }

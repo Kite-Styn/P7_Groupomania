@@ -7,7 +7,7 @@
         <div>
             <p class="bold">{{ author }}</p>
             <p>{{ comment_count }} commentaires</p>
-            <p>{{ score }}</p>
+            <p><span></span> {{ score }}</p>
         </div>
     </router-link>
 </template>

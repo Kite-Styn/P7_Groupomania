@@ -11,7 +11,7 @@
         :author="i.author"
         :comment_count="i.comment_count"
         :score="i.score"/>
-        <p v-show="postsList == null">Il n'y a aucun post à afficher, désolé</p>
+        <p v-show="noPosts">Il n'y a aucun post à afficher, désolé.</p>
       </main>
       <NewPosts/>
     </div>
@@ -41,7 +41,8 @@ export default {
         author: "",
         comment_count: 0,
         score: 0
-      }]
+      }],
+      noPosts: false
     }
   },
   async created() {
@@ -57,6 +58,9 @@ export default {
     }
     let data = await res.json();
     this.postsList = data;
+    if (this.postsList[0] == null) {
+      this.noPosts = true
+    }
   }
 }
 </script>
