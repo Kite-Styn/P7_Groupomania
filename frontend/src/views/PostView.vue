@@ -11,7 +11,7 @@
           <div>
             <p><span class="bold">{{currentPost.author}}</span>  <span :title="currentPost.date.replace(`T`, ` `).replace(`.000Z`, ``)">{{currentPost.date.split(`T`)[0]}}</span></p>
             <p>{{currentPost.comment_count}} commentaires</p>
-            <p>{{currentPost.score}}</p>
+            <p><font-awesome-icon class="green clickable" v-show="isLiked" @click="postLike" icon="thumbs-up" size="lg"/><font-awesome-icon class="grey clickable" v-show="isLiked == false" @click="postLike" icon="thumbs-up" size="lg"/> {{ userScore + hasLike + currentPost.score }} <font-awesome-icon class="red clickable" v-show="isDisliked" @click="postDislike" icon="thumbs-down" size="lg"/><font-awesome-icon class="grey clickable" v-show="isDisliked == false" @click="postDislike" icon="thumbs-down" size="lg"/></p>
           </div>
         </div>
         <div id="write-comment">
@@ -68,7 +68,11 @@ export default {
           reply_username: "",
           content: ""
         }
-      ]
+      ],
+      isLiked: false,
+      isDisliked: false,
+      userScore: 0,
+      hasLike: 0
     }
   },
   methods: {
@@ -97,6 +101,33 @@ export default {
       }
       let commentData = await commentRes.json();
       this.commentsList = commentData;
+      this.isLiked = false;
+      this.isDisliked = false;
+      this.userScore = 0;
+      this.hasLike = 0;
+      let userData = JSON.parse(sessionStorage.getItem("user"));
+      let likeRes = await fetch(`http://localhost:3000/api/postlike/${userData.userId}_${this.$route.params.id}`, {
+        method: "GET",
+        headers: {
+            "Accept" : "application/json",
+            "Content-Type" : "application/json"
+        }
+      });
+      if (!likeRes.ok) {
+          throw new Error()
+      }
+      let likeData = await likeRes.json();
+      if (likeData != null) {
+        if (likeData.score > 0) {
+          this.isLiked = true;
+          this.userScore = likeData.score;
+          this.hasLike = -likeData.score
+        } else {
+          this.isDisliked = true;
+          this.userScore = likeData.score;
+          this.hasLike = -likeData.score
+        }
+      }
     },
     async createComment() {
       let userData = JSON.parse(sessionStorage.getItem("user"));
@@ -125,7 +156,102 @@ export default {
       console.log(data);
       window.location.href=`http://localhost:8080/post/${this.$route.params.id}`
     },
-
+    async postLike() {
+      let userData = JSON.parse(sessionStorage.getItem("user"));
+      let userLike = {
+          userId: userData.userId,
+          score: +1,
+          post_id: this.$route.params.id,
+      };
+      if (this.isLiked == false) {
+        this.userScore ++;
+        let method = "POST";
+        if (this.isDisliked == true) {
+          method = "PUT";
+          this.userScore ++
+        }
+        let res = await fetch("http://localhost:3000/api/postlike", {
+        method: `${method}`,
+        headers: {
+        "Accept" : "application/json",
+        "Content-Type" : "application/json",
+        "Authorization" : `Bearer ${userData.token}`
+        },
+        body: JSON.stringify(userLike)
+        });
+        if (!res.ok) {
+            throw new Error()
+        }
+        let data = await res.json();
+        console.log(data);
+      } else {
+        this.userScore --;
+        let res = await fetch("http://localhost:3000/api/postlike", {
+        method: "DELETE",
+        headers: {
+        "Accept" : "application/json",
+        "Content-Type" : "application/json",
+        "Authorization" : `Bearer ${userData.token}`
+        },
+        body: JSON.stringify(userLike)
+        });
+        if (!res.ok) {
+            throw new Error()
+        }
+        let data = await res.json();
+        console.log(data);
+      }
+      this.isLiked = !this.isLiked;
+      this.isDisliked = false;
+    },
+    async postDislike() {
+      let userData = JSON.parse(sessionStorage.getItem("user"));
+      let userLike = {
+          userId: userData.userId,
+          score: -1,
+          post_id: this.$route.params.id,
+      };
+      if (this.isDisliked == false) {
+        this.userScore --;
+        let method = "POST";
+        if (this.isLiked == true) {
+          method = "PUT";
+          this.userScore --
+        }
+        let res = await fetch("http://localhost:3000/api/postlike", {
+        method: `${method}`,
+        headers: {
+        "Accept" : "application/json",
+        "Content-Type" : "application/json",
+        "Authorization" : `Bearer ${userData.token}`
+        },
+        body: JSON.stringify(userLike)
+        });
+        if (!res.ok) {
+            throw new Error()
+        }
+        let data = await res.json();
+        console.log(data);
+      } else {
+        this.userScore ++;
+        let res = await fetch("http://localhost:3000/api/postlike", {
+        method: "DELETE",
+        headers: {
+        "Accept" : "application/json",
+        "Content-Type" : "application/json",
+        "Authorization" : `Bearer ${userData.token}`
+        },
+        body: JSON.stringify(userLike)
+        });
+        if (!res.ok) {
+            throw new Error()
+        }
+        let data = await res.json();
+        console.log(data);
+      }
+      this.isDisliked = !this.isDisliked;
+      this.isLiked = false;
+    },
   },
   async created() {
     this.$watch(
@@ -137,6 +263,9 @@ export default {
       // already being observed
       { immediate: true }
     )
+  },
+  async mounted() {
+
   }
 }
 </script>
@@ -153,6 +282,10 @@ export default {
     flex-direction: row;
     justify-content: space-evenly;
   }
+}
+
+.clickable {
+  cursor: pointer;
 }
 
 #write-comment {
