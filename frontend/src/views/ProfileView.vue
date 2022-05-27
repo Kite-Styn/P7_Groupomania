@@ -17,7 +17,7 @@
           <div id="theme-select-block">
             <label for="theme-select">Choisir une couleur de fond : </label>
             <select name="theme-select" id="theme-select">
-              <option value="">--Choisissez une couleur</option>
+              <option value="">--Choisissez une couleur--</option>
               <option value="#c2bebe">Gris</option>
               <option value="red">Rouge</option>
               <option value="blue">Bleu</option>
@@ -30,7 +30,7 @@
         </div>
       </div>
       <button id="delete-account" @click="deleteAccount">Supprimer le compte</button>
-      <div id="delete-hidden">
+      <div v-show="deleteShow" id="delete-hidden">
         <p>La suppression est définitive.</p>
         <button id="delete-account-confirm" @click="deleteAccountConfirm">Confirmer</button>
       </div>
@@ -50,6 +50,7 @@ export default {
   },
   data() {
     return {
+      deleteShow: false
     }
   },
   methods: {
@@ -96,7 +97,7 @@ export default {
     deleteAccount() {
       let userId = JSON.parse(sessionStorage.getItem("user"));
       console.log(userId);
-      document.getElementById("delete-hidden").style.display = "initial"
+      this.deleteShow = !this.deleteShow
     },
     async deleteAccountConfirm() {
       let userData = JSON.parse(sessionStorage.getItem("user"));
@@ -201,6 +202,10 @@ export default {
   object-fit: cover;
 }
 
+#new-picture {
+  margin: 5px 0;
+}
+
 .bold {
   font-weight: bold;
 }
@@ -210,12 +215,23 @@ export default {
 }
 
 #delete-hidden {
-  display: none;
   & p {
     color: red;
   };
   & button {
     background-color: red;
+  }
+}
+
+@media (max-width: 500px) {
+  #user-info {
+    flex-wrap: wrap-reverse;
+    &-image {
+      width: 90%;
+    }
+    &-data {
+      width: 90%;
+    }
   }
 }
 </style>

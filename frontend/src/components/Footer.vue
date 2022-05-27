@@ -3,9 +3,9 @@
     <img src="../assets/icon-left-font-monochrome-black.png" alt="Logo groupomania">
     <div>
       <h3>Contact</h3>
-      <p>Addresse : 12 Rue du Banc</p>
-      <p>Téléphone : 01 23 45 67 89</p>
-      <p>E-mail : groupomail@gmail.com</p>
+      <p>Addresse : <br>Rue du Banc</p>
+      <p>Téléphone : <br>01 23 45 67 89</p>
+      <p>E-mail : <br>groupomail@gmail.com</p>
     </div>
     <div>
       <h3>Management</h3>
@@ -41,6 +41,15 @@ footer {
   & div {
     width: 30%;
     margin: 25px 0;
+  }
+}
+
+@media (max-width: 900px) {
+  footer {
+    & div {
+      word-wrap: break-word;
+      font-size: small;
+    }
   }
 }
 </style>

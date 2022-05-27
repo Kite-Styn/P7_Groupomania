@@ -19,4 +19,16 @@ body {
   background-color: white;
 }
 
+@media (min-width: 501px) and (max-width: 900px) {
+  body {
+    margin: 0 5%;
+  }
+}
+
+@media (max-width: 500px) {
+  body {
+    margin: 0 2px;
+  }
+}
+
 </style>

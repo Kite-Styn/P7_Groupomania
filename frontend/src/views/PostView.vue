@@ -10,7 +10,7 @@
           </div>
           <div>
             <p><span class="bold">{{currentPost.author}}</span>  <span :title="currentPost.date.replace(`T`, ` `).replace(`.000Z`, ``)">{{currentPost.date.split(`T`)[0]}}</span></p>
-            <p>{{currentPost.comment_count}} commentaires</p>
+            <p>{{currentPost.comment_count}} commentaire<span v-if="currentPost.comment_count > 1">s</span></p>
             <p><font-awesome-icon class="green clickable" v-show="isLiked" @click="postLike" icon="thumbs-up" size="lg"/><font-awesome-icon class="grey clickable" v-show="isLiked == false" @click="postLike" icon="thumbs-up" size="lg"/> {{ userScore + hasLike + currentPost.score }} <font-awesome-icon class="red clickable" v-show="isDisliked" @click="postDislike" icon="thumbs-down" size="lg"/><font-awesome-icon class="grey clickable" v-show="isDisliked == false" @click="postDislike" icon="thumbs-down" size="lg"/></p>
           </div>
         </div>
@@ -294,6 +294,24 @@ export default {
   align-items: center;
   & textarea {
     margin: 10px;
+  }
+}
+
+@media (max-width: 900px) {
+  #write-comment {
+    & textarea {
+      width: 30em;
+      height: 5em;
+    }
+  }
+}
+
+@media (max-width: 900px) {
+  #write-comment {
+    & textarea {
+      width: 20em;
+      height: 7em;
+    }
   }
 }
 </style>

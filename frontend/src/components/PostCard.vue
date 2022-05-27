@@ -4,10 +4,10 @@
         <div>
             <img :src="image_url" alt="Post">
         </div>
-        <div>
+        <div class="black">
             <p class="bold">{{ author }}</p>
-            <p>{{ comment_count }} commentaires</p>
-            <p><font-awesome-icon class="green" v-show="isLiked" @click.prevent="postLike" icon="thumbs-up" size="lg"/><font-awesome-icon class="grey" v-show="isLiked == false" @click.prevent="postLike" icon="thumbs-up" size="lg"/> {{ userScore + hasLike + score }} <font-awesome-icon class="red" v-show="isDisliked" @click.prevent="postDislike" icon="thumbs-down" size="lg"/><font-awesome-icon class="grey" v-show="isDisliked == false" @click.prevent="postDislike" icon="thumbs-down" size="lg"/></p>
+            <p>{{ comment_count }} commentaire<span v-if="comment_count > 1">s</span></p>
+            <p><font-awesome-icon class="green" v-show="isLiked" @click.prevent="postLike" icon="thumbs-up" size="lg"/><font-awesome-icon class="grey" v-show="isLiked == false" @click.prevent="postLike" icon="thumbs-up" size="lg"/> {{ userScore + score }} <font-awesome-icon class="red" v-show="isDisliked" @click.prevent="postDislike" icon="thumbs-down" size="lg"/><font-awesome-icon class="grey" v-show="isDisliked == false" @click.prevent="postDislike" icon="thumbs-down" size="lg"/></p>
         </div>
     </router-link>
 </template>
@@ -20,8 +20,7 @@ export default {
       return {
         isLiked: false,
         isDisliked: false,
-        userScore: 0,
-        hasLike: 0
+        userScore: 0
       }
     },
     methods: {
@@ -40,32 +39,32 @@ export default {
             this.userScore ++
           }
           let res = await fetch("http://localhost:3000/api/postlike", {
-          method: `${method}`,
-          headers: {
-          "Accept" : "application/json",
-          "Content-Type" : "application/json",
-          "Authorization" : `Bearer ${userData.token}`
-          },
-          body: JSON.stringify(userLike)
+            method: `${method}`,
+            headers: {
+              "Accept" : "application/json",
+              "Content-Type" : "application/json",
+              "Authorization" : `Bearer ${userData.token}`
+            },
+            body: JSON.stringify(userLike)
           });
           if (!res.ok) {
-              throw new Error()
+            throw new Error()
           }
           let data = await res.json();
           console.log(data);
         } else {
           this.userScore --;
           let res = await fetch("http://localhost:3000/api/postlike", {
-          method: "DELETE",
-          headers: {
-          "Accept" : "application/json",
-          "Content-Type" : "application/json",
-          "Authorization" : `Bearer ${userData.token}`
-          },
-          body: JSON.stringify(userLike)
+            method: "DELETE",
+            headers: {
+              "Accept" : "application/json",
+              "Content-Type" : "application/json",
+              "Authorization" : `Bearer ${userData.token}`
+            },
+            body: JSON.stringify(userLike)
           });
           if (!res.ok) {
-              throw new Error()
+            throw new Error()
           }
           let data = await res.json();
           console.log(data);
@@ -88,32 +87,32 @@ export default {
             this.userScore --
           }
           let res = await fetch("http://localhost:3000/api/postlike", {
-          method: `${method}`,
-          headers: {
-          "Accept" : "application/json",
-          "Content-Type" : "application/json",
-          "Authorization" : `Bearer ${userData.token}`
-          },
-          body: JSON.stringify(userLike)
+            method: `${method}`,
+            headers: {
+              "Accept" : "application/json",
+              "Content-Type" : "application/json",
+              "Authorization" : `Bearer ${userData.token}`
+            },
+            body: JSON.stringify(userLike)
           });
           if (!res.ok) {
-              throw new Error()
+            throw new Error()
           }
           let data = await res.json();
           console.log(data);
         } else {
           this.userScore ++;
           let res = await fetch("http://localhost:3000/api/postlike", {
-          method: "DELETE",
-          headers: {
-          "Accept" : "application/json",
-          "Content-Type" : "application/json",
-          "Authorization" : `Bearer ${userData.token}`
-          },
-          body: JSON.stringify(userLike)
+            method: "DELETE",
+            headers: {
+              "Accept" : "application/json",
+              "Content-Type" : "application/json",
+              "Authorization" : `Bearer ${userData.token}`
+            },
+            body: JSON.stringify(userLike)
           });
           if (!res.ok) {
-              throw new Error()
+            throw new Error()
           }
           let data = await res.json();
           console.log(data);
@@ -137,13 +136,9 @@ export default {
       let data = await res.json();
       if (data != null) {
         if (data.score > 0) {
-          this.isLiked = true;
-          this.userScore = data.score;
-          this.hasLike = -data.score
+          this.isLiked = true
         } else {
-          this.isDisliked = true;
-          this.userScore = data.score;
-          this.hasLike = -data.score
+          this.isDisliked = true
         }
       }
     }
@@ -153,6 +148,10 @@ export default {
 <style lang="scss">
 .green {
   color: green;
+}
+
+.black {
+  color: black;
 }
 
 .post-card-list {

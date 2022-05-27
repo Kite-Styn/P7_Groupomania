@@ -6,7 +6,7 @@
     </div>
     <nav id="nav">
       <router-link to="/posts">Posts</router-link> |
-      <router-link to="/create-post">Créer un post</router-link> |||
+      <router-link to="/create-post">Poster</router-link> |||
       <router-link to="/profile">Profil</router-link> |
       <router-link @click="logout" to="/login" id="logout">Logout</router-link>
     </nav>

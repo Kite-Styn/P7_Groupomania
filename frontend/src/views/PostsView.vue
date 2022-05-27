@@ -82,4 +82,13 @@ a:visited {
     width: 65%;
   }
 }
+
+@media (max-width: 500px) {
+  .content {
+    flex-wrap: wrap-reverse;
+    & main {
+      width: 95%;
+    }
+  }
+}
 </style>

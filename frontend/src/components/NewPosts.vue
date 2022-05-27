@@ -79,11 +79,21 @@ export default {
         border: black solid 1px;
         margin-bottom: 10px;
         padding: 0 10px;
+        padding-bottom: 10px;
     }
     & img {
         height: 200px;
         object-fit: contain;
         max-width: 100%;
+    }
+}
+
+@media (max-width: 500px) {
+    #new-posts {
+        width: 95%;
+        & img {
+            height: 150px;
+        }
     }
 }
 </style>

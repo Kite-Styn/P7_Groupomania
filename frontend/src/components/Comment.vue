@@ -1,6 +1,6 @@
 <template>
     <div class="comment">
-        <p><span class="bold">{{ author }}</span> - {{ date.replace(`T`, ` `).replace(`.000Z`, ``) }} <span class="grey" v-if='edit_date !== null' :title="'modifié le:' + edit_date.replace(`T`, ` `).replace(`.000Z`, ``) || edit_date">*</span> - {{ score }} pts</p>
+        <p><span class="bold">{{ author }}</span> - {{ date.replace(`T`, ` `).replace(`.000Z`, ``) }} <span class="grey" v-if='edit_date !== null' :title="'modifié le:' + edit_date.replace(`T`, ` `).replace(`.000Z`, ``) || edit_date">*</span> - <font-awesome-icon class="green clickable" v-show="isLiked" @click="commentLike" icon="thumbs-up" size="lg"/><font-awesome-icon class="grey clickable" v-show="isLiked == false" @click="commentLike" icon="thumbs-up" size="lg"/> {{ userScore + score }} <font-awesome-icon class="red clickable" v-show="isDisliked" @click="commentDislike" icon="thumbs-down" size="lg"/><font-awesome-icon class="grey clickable" v-show="isDisliked == false" @click="commentDislike" icon="thumbs-down" size="lg"/></p>
         <p><span class="bold" v-if="reply_username !== null">@{{ reply_username }}</span> {{ content }}</p>
         <div class="comment-buttons-block">
             <button @click="replyComment" class="reply-comment-button">Répondre</button>
@@ -34,7 +34,10 @@ export default {
             modifyCommentDisplay: false,
             deleteCommentDisplay: false,
             replyContent: "",
-            newContent: ""
+            newContent: "",
+            userScore: 0,
+            isLiked: false,
+            isDisliked: false
         }
     },
     methods: {
@@ -122,17 +125,132 @@ export default {
             let data = await res.json();
             console.log(data);
             window.location.href=`http://localhost:8080/post/${this.$route.params.id}`
-        }
+        },
+        async commentLike() {
+            let userData = JSON.parse(sessionStorage.getItem("user"));
+            let userLike = {
+                userId: userData.userId,
+                score: +1,
+                comment_id: this.$.vnode.key,
+            };
+            if (this.isLiked == false) {
+                this.userScore ++;
+                let method = "POST";
+                if (this.isDisliked == true) {
+                    method = "PUT";
+                    this.userScore ++
+                }
+                let res = await fetch("http://localhost:3000/api/commentlike", {
+                    method: `${method}`,
+                    headers: {
+                        "Accept" : "application/json",
+                        "Content-Type" : "application/json",
+                        "Authorization" : `Bearer ${userData.token}`
+                    },
+                    body: JSON.stringify(userLike)
+                });
+                if (!res.ok) {
+                    throw new Error()
+                }
+                let data = await res.json();
+                console.log(data);
+            } else {
+                this.userScore --;
+                let res = await fetch("http://localhost:3000/api/commentlike", {
+                    method: "DELETE",
+                    headers: {
+                        "Accept" : "application/json",
+                        "Content-Type" : "application/json",
+                        "Authorization" : `Bearer ${userData.token}`
+                    },
+                    body: JSON.stringify(userLike)
+                });
+                if (!res.ok) {
+                    throw new Error()
+                }
+                let data = await res.json();
+                console.log(data);
+            }
+            this.isLiked = !this.isLiked;
+            this.isDisliked = false;
+        },
+        async commentDislike() {
+            let userData = JSON.parse(sessionStorage.getItem("user"));
+            let userLike = {
+                userId: userData.userId,
+                score: -1,
+                comment_id: this.$.vnode.key,
+            };
+            if (this.isDisliked == false) {
+                this.userScore --;
+                let method = "POST";
+                if (this.isLiked == true) {
+                    method = "PUT";
+                    this.userScore --
+                }
+                let res = await fetch("http://localhost:3000/api/commentlike", {
+                    method: `${method}`,
+                    headers: {
+                        "Accept" : "application/json",
+                        "Content-Type" : "application/json",
+                        "Authorization" : `Bearer ${userData.token}`
+                    },
+                    body: JSON.stringify(userLike)
+                });
+                if (!res.ok) {
+                    throw new Error()
+                }
+                let data = await res.json();
+                console.log(data);
+            } else {
+                this.userScore ++;
+                let res = await fetch("http://localhost:3000/api/commentlike", {
+                    method: "DELETE",
+                    headers: {
+                        "Accept" : "application/json",
+                        "Content-Type" : "application/json",
+                        "Authorization" : `Bearer ${userData.token}`
+                    },
+                    body: JSON.stringify(userLike)
+                });
+                if (!res.ok) {
+                    throw new Error()
+                }
+                let data = await res.json();
+                console.log(data);
+            }
+            this.isDisliked = !this.isDisliked;
+            this.isLiked = false;
+        },
     },
     created() {
         let user = JSON.parse(sessionStorage.getItem("user"));
-        /*console.log(user);
-        console.log(this.author);*/
         if (user.username === this.author) {
             this.isAuthor = true
         }
         if (user.username === this.author || JSON.parse(sessionStorage.getItem("user")).isAdmin === true) {
             this.isAuthorOrAdmin = true
+        }
+    },
+    async mounted() {
+        let userData = JSON.parse(sessionStorage.getItem("user"));
+        let res = await fetch(`http://localhost:3000/api/commentlike/${userData.userId}_${this.$.vnode.key}`, {
+            method: "GET",
+            headers: {
+                "Accept" : "application/json",
+                "Content-Type" : "application/json"
+            }
+        });
+        if (!res.ok) {
+            throw new Error()
+        }
+        let data = await res.json();
+        if (data != null) {
+            if (data.score > 0) {
+                this.isLiked = true
+            } else {
+                this.isDisliked = true
+            }
         }
     }
 }
@@ -146,6 +264,7 @@ export default {
     & p {
         margin-top: 8px;
         margin-bottom: 8px;
+        word-wrap: break-word;
     }
 }
 
@@ -197,5 +316,14 @@ export default {
 
 .grey {
     color: grey
+}
+
+@media (max-width: 900px) {
+  .comment {
+    & textarea {
+      width: 20em;
+      height: 5em;
+    }
+  }
 }
 </style>

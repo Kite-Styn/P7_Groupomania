@@ -35,5 +35,6 @@ db.users = require("./User")(sequelize, Sequelize);
 db.posts = require("./Post")(sequelize, Sequelize);
 db.comments = require("./Comment")(sequelize, Sequelize);
 db.usersPosts = require("./UserPost")(sequelize, Sequelize);
+db.usersComments = require("./UserComment")(sequelize, Sequelize);
 
 module.exports = db;

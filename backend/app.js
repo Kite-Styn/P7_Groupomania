@@ -12,11 +12,12 @@ const userRoutes = require("./routes/user");
 const postRoutes = require("./routes/post");
 const commentRoutes = require("./routes/comment");
 const userPostRoutes = require("./routes/userPost");
+const userCommentRoutes = require("./routes/userComment");
 
 //Limits the number of requests for a given time per IP
 const limiter = rateLimit({
 	windowMs: 5 * 60 * 1000, // 5 minutes
-	max: 100, // Limit each IP to 100 requests per `window` (here, per 5 minutes)
+	max: 2000, // Limit each IP to 2000 requests per `window` (here, per 5 minutes)
 	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
 	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 })
@@ -80,6 +81,7 @@ app.use("/api/auth", userRoutes);
 app.use("/api/post", postRoutes);
 app.use("/api/comment", commentRoutes);
 app.use("/api/postlike", userPostRoutes);
+app.use("/api/commentlike", userCommentRoutes);
 
 //const db = require("./models/db");
 //db.sequelize.sync();

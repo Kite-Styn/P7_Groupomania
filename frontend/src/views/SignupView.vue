@@ -172,4 +172,13 @@ button {
 .required {
   color: red;
 }
+
+@media (max-width: 500px) {
+  form {
+    margin: 0;
+    & div {
+      width: 90%;
+    }
+  }
+}
 </style>

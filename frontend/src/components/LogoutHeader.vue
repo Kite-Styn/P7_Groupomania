@@ -29,6 +29,7 @@ header {
   justify-content: space-between;
   margin: 0 5% 30px 5%;
   border-bottom: #7ff9ff solid;
+  padding-top: 5px;
   & img {
     height: 70px;
   }
@@ -46,7 +47,10 @@ header {
 
 nav {
   padding: 30px;
-
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  justify-content: center;
   a {
     font-weight: bold;
     color: #2c3e50;
@@ -56,4 +60,25 @@ nav {
     }
   }
 }
+
+@media (max-width: 500px) {
+  header {
+    margin: 0 1% 30px 1%;
+    flex-wrap: wrap;
+    height: auto;
+    & img {
+      height: 130px;
+    }
+    & p {
+      margin: 0;
+      padding: 0;
+    }
+  }
+  nav {
+    width: 90%;
+    padding: 20px;
+  }
+}
+
+
 </style>

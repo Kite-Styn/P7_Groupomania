@@ -6,7 +6,7 @@
       <div id="post-data">
         <div>
           <label for="post-title">Titre du post : <br>255 caractères max</label>
-          <textarea type="text" maxlength="255" rows="2" cols="40" name="post-title" id="post-title"></textarea>
+          <textarea type="text" maxlength="255" cols="40" name="post-title" id="post-title"></textarea>
         </div>
         <div>
           <label for="post-image">Sélectionnez une image : </label>
@@ -74,6 +74,21 @@ export default {
     align-items: center;
     & label {
       margin: 5px;
+    }
+    & textarea {
+      height: 5em;
+    }
+  }
+}
+
+@media (max-width: 500px) {
+  #post-data {
+    & div {
+      flex-direction: column;
+      & textarea {
+        width: 15em;
+        height: 9em;
+      }
     }
   }
 }
