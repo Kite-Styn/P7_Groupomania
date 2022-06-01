@@ -10,7 +10,7 @@
         </div>
         <div>
           <label for="post-image">Sélectionnez une image : <br>*png, jpg ou jpeg</label>
-          <input type="file" name="post-image" id="post-image">
+          <input type="file" name="post-image" id="post-image" accept=".png, .jpg, .jpeg, .gif">
         </div>
         <p v-show="invalidPost" class="red">Veuillez ajouter un titre et une image</p>
         <button @click="postCreate">Créer</button>
