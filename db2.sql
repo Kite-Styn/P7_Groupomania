@@ -105,7 +105,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'Admin','http://localhost:3000/images/user-default.png','tadzZ2yrZLKbPSGXmMlqXsQEGoTL1U3BlnMRyo43BVg=','$2b$10$hqBoSnEy0JzFyxuTY7mAcumkmNIiQw2RftUp0vA1obIv4lOWnIsqu','blue',1);
+INSERT INTO `users` VALUES (1,'Admin','http://localhost:3000/images/user-default.png','/p0nnFUC4U//R4cOfy+z6w==','$2b$10$hqBoSnEy0JzFyxuTY7mAcumkmNIiQw2RftUp0vA1obIv4lOWnIsqu','blue',1);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 

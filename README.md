@@ -14,7 +14,7 @@ then entering your password.
 Create a database with "create database groupomania;"
 Then exit the mysql interface with "exit;" and copy the database file into your database with 
 "mysql -u root -p groupomania < c:/filepath-here/db.sql" and then entering your password(use db2.sql
-instead to also import the admin user, the password is: 12341234).
+instead to also import the admin user, the email is: test@gmail.com and the password is: 12341234).
 -Now, navigate to the backend folder with a terminal and run: "npm install" to install the dependencies.
 You must rename the ".env-copy" file to ".env" and insert your mysql username and password in the DEV_USER 
 and DEV_PASS fields within the file. This is also where you can set the name of the database 
