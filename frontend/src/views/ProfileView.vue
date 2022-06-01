@@ -9,6 +9,7 @@
             <img id="profile-image" src="http://localhost:3000/images/user-default.png" alt="Image profil">
           </div>
           <input type="file" name="new-picture" id="new-picture" accept=".png, .jpg, .jpeg">
+          <p>*png, jpg ou jpeg</p>
           <button @click="changePicture">Modifier l'image profil</button>
         </div>
         <div id="user-info-data">
@@ -54,6 +55,7 @@ export default {
     }
   },
   methods: {
+    //Handles user picture change
     async changePicture() {
       let userPicture = document.getElementById("new-picture");
       console.log(userPicture.files[0]);
@@ -69,13 +71,17 @@ export default {
         method: "PUT",
         headers: {
           "Accept" : "application/json",
-          //"Content-Type" : "application/json",
           "Authorization" : `Bearer ${userData.token}`
         },
         body: formData
       });
       if (!res.ok) {
-        throw new Error()
+        let data = await res.json();
+        if (data == "Request not authorized" || data == "User ID invalid") {
+          sessionStorage.removeItem("user");
+          window.location.href="http://localhost:8080/login";
+        }
+      throw new Error()
       }
       let data = await res.json();
       console.log(data);
@@ -94,11 +100,13 @@ export default {
       console.log(dataGet);
       document.getElementById("profile-image").src = dataGet.picture;
     },
+    //Toggles delete confirm display
     deleteAccount() {
       let userId = JSON.parse(sessionStorage.getItem("user"));
       console.log(userId);
       this.deleteShow = !this.deleteShow
     },
+    //Sends a request for account deletion
     async deleteAccountConfirm() {
       let userData = JSON.parse(sessionStorage.getItem("user"));
       let res = await fetch(`http://localhost:3000/api/auth/${userData.userId}`, {
@@ -111,17 +119,23 @@ export default {
       body: JSON.stringify(userData)
     });
     if (!res.ok) {
-      throw new Error()
+      let data = await res.json();
+      if (data == "Request not authorized" || data == "User ID invalid") {
+        sessionStorage.removeItem("user");
+        window.location.href="http://localhost:8080/login";
+      }
+    throw new Error()
     }
     let data = await res.json();
     console.log(data);
     sessionStorage.removeItem("user");
     window.location.href="http://localhost:8080/"
     },
+    //Handles user theme change
     async saveTheme() {
       let userData = JSON.parse(sessionStorage.getItem("user"));
       let selectedColor = document.getElementById("theme-select").value;
-      if (selectedColor !== "") {
+      if (selectedColor !== "" && selectedColor !== userData.themeColor) {
         console.log(selectedColor);
         userData.themeColor = selectedColor;
         let res = await fetch(`http://localhost:3000/api/auth/color/${userData.userId}`, {
@@ -134,7 +148,12 @@ export default {
           body: JSON.stringify(userData)
         });
         if (!res.ok) {
-          throw new Error()
+          let data = await res.json();
+          if (data == "Request not authorized" || data == "User ID invalid") {
+            sessionStorage.removeItem("user");
+            window.location.href="http://localhost:8080/login";
+          }
+        throw new Error()
         }
         let data = await res.json();
         console.log(data);
@@ -144,6 +163,7 @@ export default {
     }
   },
   async created() {
+    //Gets user data to display
     let userData = JSON.parse(sessionStorage.getItem("user"));
     let res = await fetch(`http://localhost:3000/api/auth/${userData.userId}`, {
       method: "GET",
@@ -154,6 +174,8 @@ export default {
       }
     });
     if (!res.ok) {
+      sessionStorage.removeItem("user");
+      window.location.href="http://localhost:8080/login";
       throw new Error()
     }
     let data = await res.json();
@@ -174,7 +196,6 @@ export default {
   margin-bottom: 50px;
   &-image {
     width: 50%;
-    height: 300px;
     max-width: 350px;
   }
   &-data {

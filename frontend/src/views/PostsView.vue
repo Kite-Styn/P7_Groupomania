@@ -46,6 +46,7 @@ export default {
     }
   },
   async created() {
+    //Gets posts data to display
     let res = await fetch("http://localhost:3000/api/post/", {
     method: "GET",
     headers: {
@@ -66,14 +67,6 @@ export default {
 </script>
 
 <style lang="scss">
-/*nav a.router-link-exact-active {
-  color: blue;
-}
-
-a:visited {
-  color: green;
-}*/
-
 .content {
   display: flex;
   flex-direction: row;

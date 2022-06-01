@@ -8,7 +8,7 @@
         <div>
           <label for="username">Nom d'utilisateur<span class="required">*</span> : </label>
           <input @keydown="filterUsername" type="text" name="username" id="username">
-          <p class="username-invalid error-invalid">Veuillez entrer un nom d'utilisateur valide</p>
+          <p class="username-invalid error-invalid">Veuillez entrer un nom d'utilisateur valide<br>4 caractères minimum<br>caractères invalides: {{ invalidCharacters }} et espaces</p>
         </div>
         <div>
           <label for="email">E-mail<span class="required">*</span> : </label>
@@ -18,7 +18,7 @@
         <div>
           <label for="password">Mot de passe<span class="required">*</span> : </label>
           <input @keydown="filterPassword" type="password" name="password" id="password">
-          <p class="password-invalid error-invalid">Veuillez entrer un mot de passe valide</p>
+          <p class="password-invalid error-invalid">Veuillez entrer un mot de passe valide<br>8 caractères minimum</p>
         </div>
         <p class="required">* Champs requis</p>
       </form>
@@ -43,9 +43,11 @@ export default {
   },
   data() {
     return {
+      invalidCharacters: "^±!@£$%^&*+¡€#¢§¶•ªº()\"'«\\/{}[]~<>?:;|=.,"
     }
   },
   methods: {
+    //Takes the inputs and sends them to the api if they are valid
     async signup() {
       let user = {
         username: document.getElementById("username").value,
@@ -66,7 +68,7 @@ export default {
         }
         let data = await res.json();
         console.log(data);
-        //Uncomment below to also login after a signup (and change the redirect to another page instead of login)
+        //Uncomment below to also login after a signup and go to posts (and delete the redirect to login)
         /*let resLog = await fetch("http://localhost:3000/api/auth/login", {
           method: "POST",
           headers: {
@@ -80,12 +82,14 @@ export default {
         }
         let dataLog = await resLog.json();
         console.log(dataLog);
-        sessionStorage.setItem("user", JSON.stringify(dataLog));*/
+        sessionStorage.setItem("user", JSON.stringify(dataLog));
+        window.location.href="http://localhost:8080/posts"*/
         window.location.href="http://localhost:8080/login"
       }
     },
   },
   mounted() {
+    //Checks the inputs with regex
     document.getElementById("username").addEventListener("input", function(e) {
       if (Store.state.regexName.test(e.target.value) && e.target.value !== "") {
         document.getElementsByClassName("username-invalid")[0].style.display = "none";
@@ -105,7 +109,7 @@ export default {
       }
     }),
     document.getElementById("password").addEventListener("input", function(e) {
-      if (e.target.value !== "") {
+      if (Store.state.regexPass.test(e.target.value) && e.target.value !== "") {
         document.getElementsByClassName("password-invalid")[0].style.display = "none";
         invalidPassword = false
       } else {

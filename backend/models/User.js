@@ -21,7 +21,7 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.BOOLEAN
     }
   }, {
-      timestamps: false
+    timestamps: false
   });
   return User;
 };

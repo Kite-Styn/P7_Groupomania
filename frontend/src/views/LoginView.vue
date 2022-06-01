@@ -13,7 +13,7 @@
         <div>
           <label for="password">Mot de passe<span class="required">*</span> : </label>
           <input type="password" name="password" id="password">
-          <p class="password-invalid error-invalid">Veuillez entrer un mot de passe valide</p>
+          <p class="password-invalid error-invalid">Veuillez entrer un mot de passe valide<br>8 caractères minimum</p>
         </div>
         <p class="required">* Champs requis</p>
       </form>
@@ -42,6 +42,7 @@ export default {
     }
   },
   methods: {
+    //Takes the inputs and sends them to the api if they are valid
     async login() {
       let user = {
         email: document.getElementById("email").value,
@@ -68,6 +69,7 @@ export default {
     }
   },
   mounted() {
+    //Checks the inputs with regex
     document.getElementById("email").addEventListener("input", function(e) {
       if (Store.state.regexEmail.test(e.target.value) && e.target.value !== "") {
         document.getElementsByClassName("email-invalid")[0].style.display = "none";
@@ -78,7 +80,7 @@ export default {
       }
     });
     document.getElementById("password").addEventListener("input", function(e) {
-      if (e.target.value !== "") {
+      if (Store.state.regexPass.test(e.target.value) && e.target.value !== "") {
         document.getElementsByClassName("password-invalid")[0].style.display = "none";
         invalidPassword = false
       } else {
@@ -88,17 +90,7 @@ export default {
     });
   }
 }
-/*// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
-
-export default {
-  name: 'HomeView',
-  components: {
-    HelloWorld
-  }
-}*/
 </script>
 
 <style lang="scss">
-
 </style>

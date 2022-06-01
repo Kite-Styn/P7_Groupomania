@@ -6,12 +6,13 @@
       <div id="post-data">
         <div>
           <label for="post-title">Titre du post : <br>255 caractères max</label>
-          <textarea type="text" maxlength="255" cols="40" name="post-title" id="post-title"></textarea>
+          <textarea type="text" maxlength="255" cols="60" name="post-title" id="post-title"></textarea>
         </div>
         <div>
-          <label for="post-image">Sélectionnez une image : </label>
+          <label for="post-image">Sélectionnez une image : <br>*png, jpg ou jpeg</label>
           <input type="file" name="post-image" id="post-image">
         </div>
+        <p v-show="invalidPost" class="red">Veuillez ajouter un titre et une image</p>
         <button @click="postCreate">Créer</button>
       </div>
     </main>
@@ -28,7 +29,13 @@ export default {
     LoginHeader,
     FooterTemp
   },
+  data() {
+    return {
+      invalidPost: false
+    }
+  },
   methods: {
+    //Gathers the inputs, checks them and sends them to the api to create a post
     async postCreate() {
       let postTitle = document.getElementById("post-title").value;
       let postImage = document.getElementById("post-image").files[0];
@@ -37,7 +44,13 @@ export default {
         title: postTitle,
         userId: userData.userId
       };
-      if (userData == null || postImage == undefined || postTitle == "") {
+      if (userData == null) {
+        sessionStorage.removeItem("user");
+        window.location.href="http://localhost:8080/login";
+        return
+      }
+      if (postImage == undefined || postTitle == "") {
+        this.invalidPost = true;
         return
       }
       let formData = new FormData();
@@ -47,13 +60,17 @@ export default {
         method: "POST",
         headers: {
           "Accept" : "application/json",
-          //"Content-Type" : "application/json",
           "Authorization" : `Bearer ${userData.token}`
         },
         body: formData
       });
       if (!res.ok) {
-        throw new Error()
+        let data = await res.json();
+        if (data == "Request not authorized" || data == "User ID invalid") {
+          sessionStorage.removeItem("user");
+          window.location.href="http://localhost:8080/login";
+        }
+      throw new Error()
       }
       let data = await res.json();
       console.log(data);
