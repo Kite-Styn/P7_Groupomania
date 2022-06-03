@@ -30,7 +30,7 @@
           </div>
         </div>
       </div>
-      <button id="delete-account" @click="deleteAccount">Supprimer le compte</button>
+      <button id="delete-account" @click="deleteAccount" v-if="isAdmin == false">Supprimer le compte</button>
       <div v-show="deleteShow" id="delete-hidden">
         <p>La suppression est définitive.</p>
         <button id="delete-account-confirm" @click="deleteAccountConfirm">Confirmer</button>
@@ -51,7 +51,8 @@ export default {
   },
   data() {
     return {
-      deleteShow: false
+      deleteShow: false,
+      isAdmin: false
     }
   },
   methods: {
@@ -165,6 +166,9 @@ export default {
   async created() {
     //Gets user data to display
     let userData = JSON.parse(sessionStorage.getItem("user"));
+    if (userData.isAdmin == true) {
+      this.isAdmin = true
+    }
     let res = await fetch(`http://localhost:3000/api/auth/${userData.userId}`, {
       method: "GET",
       headers: {

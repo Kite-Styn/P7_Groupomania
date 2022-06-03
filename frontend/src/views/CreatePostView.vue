@@ -9,7 +9,7 @@
           <textarea type="text" maxlength="255" cols="60" name="post-title" id="post-title"></textarea>
         </div>
         <div>
-          <label for="post-image">Sélectionnez une image : <br>*png, jpg ou jpeg</label>
+          <label for="post-image">Sélectionnez une image : <br>*png, jpg, jpeg ou gif</label>
           <input type="file" name="post-image" id="post-image" accept=".png, .jpg, .jpeg, .gif">
         </div>
         <p v-show="invalidPost" class="red">Veuillez ajouter un titre et une image</p>
